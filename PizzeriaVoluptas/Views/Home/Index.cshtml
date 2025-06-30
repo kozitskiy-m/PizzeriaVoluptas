@@ -1,0 +1,299 @@
+﻿+++++++@{
+    ViewData["Title"] = "Home Page";
+    var banners = ViewData["banners"] as List<PizzeriaVoluptas.Models.Db.Banner>;
+    var newDishes = ViewData["newDishes"] as List<PizzeriaVoluptas.Models.Db.Dish>;
+
+}
+
+<!--slider area start-->
+<section class="slider_section mb-63">
+    <div class="slider_area slick_slider_activation" data-slick='{
+            "slidesToShow": 1,
+            "slidesToScroll": 1,
+            "arrows": true,
+            "dots": true,
+            "autoplay": false,
+            "speed": 300,
+            "infinite": true
+        }'>
+
+        @if(banners != null)
+        {
+
+            var sliders = banners.Where(x => x.Position == "Slider").OrderBy(x => x.Priority).ToList();
+
+            foreach(var item in sliders)
+            {
+                <div class="single_slider d-flex align-items-center" data-bgimg="/images/banners/@item.ImageName">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-7">
+                                <div class="slider_text">
+                                    <h1>@Html.Raw(item.Title.Replace("\n","<br/>"))</h1>
+                                    <p>@Html.Raw(item.SubTitle.Replace("\n", "<br/>"))</p>
+                                    <a class="btn btn-primary" href="@item.Link">Order Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+    </div>
+</section>
+<!--slider area end-->
+<!--shipping section start-->
+<section class="shipping_section mb-102">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="shipping_inner d-flex justify-content-between">
+                    <div class="single_shipping d-flex align-items-center">
+                        <div class="shipping_icon">
+                            <i class="icon-cursor icons"></i>
+                        </div>
+                        <div class="shipping_text">
+                            <h3>Free Shipping</h3>
+                            <p>Orders over $30</p>
+                        </div>
+                    </div>
+                    
+                    <div class="single_shipping d-flex align-items-center">
+                        <div class="shipping_icon">
+                            <i class="icon-lock icons"></i>
+                        </div>
+                        <div class="shipping_text">
+                            <h3>100% Payment Secure</h3>
+                            <p>Payment Online</p>
+                        </div>
+                    </div>
+                    <div class="single_shipping d-flex align-items-center">
+                        <div class="shipping_icon">
+                            <i class="icon-tag icons"></i>
+                        </div>
+                        <div class="shipping_text">
+                            <h3>Affordable Price</h3>
+                            <p>Guaranteed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--shipping section end-->
+<!-- banner section start -->
+<section class="banner_section mb-109">
+    <div class="container">
+        <div class="section_title mb-60">
+            <h2>Tastes best</h2>
+        </div>
+        <div class="banner_container d-flex">
+
+            @if (banners != null)
+            {
+
+                var banners_list = banners.Where(x => x.Position == "Banner1").OrderBy(x => x.Priority).ToList();
+
+                foreach (var item in banners_list)
+                {
+                    <figure class="single_banner position-relative mr-30">
+                        <img src="/images/banners/@item.ImageName" alt="@item.ImageName">
+                        <figcaption class="banner_text position-absolute">
+                            <h3>@Html.Raw(item.Title.Replace("\n", "<br/>"))</h3>
+                            <p>>@Html.Raw(item.SubTitle.Replace("\n", "<br/>"))</p>
+                            @if(!string.IsNullOrEmpty(item.Link))
+                            {
+                                <a class="btn btn-primary" href="@item.Link">Order Now</a>
+                            }
+
+                           
+                        </figcaption>
+                    </figure>
+                }
+
+            }
+
+            
+        </div>
+    </div>
+</section>
+<!-- banner section end -->
+<!-- product section start -->
+<section class="product_section mb-80">
+    <div class="container">
+        <div class="product_header d-flex justify-content-between  mb-60">
+            <div class="section_title">
+                <h2>new arrivals</h2>
+            </div>
+
+        </div>
+        <div class="product_container row">
+            <!-- додати простір між піцою -->
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="all2" role="tabpanel">
+                    <div class="product_slick slick_slider_activation" data-slick='{
+                            "slidesToShow": 4,
+                            "slidesToScroll": 1,
+                            "arrows": true,
+                            "dots": false,
+                            "autoplay": false,
+                            "speed": 300,
+                            "infinite": true,
+                            "responsive":[
+                              {"breakpoint":992, "settings": { "slidesToShow": 3 } },
+                              {"breakpoint":768, "settings": { "slidesToShow": 2 } },
+                              {"breakpoint":300, "settings": { "slidesToShow": 1 } }
+                             ]
+                        }'>
+
+                        @if (newDishes != null && newDishes.Any())
+                        {
+                            @foreach (var item in newDishes)
+                            {
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-6 row g-3 ">
+                                    <div class="single_product">
+                                        <div class="product_thumb">
+                                            <a href="/dishesuser/DishDetails/@item.Id">
+                                                <img class="primary_img" src="/images/banners/@item.ImageName" alt="@item.ImageName">
+                                            </a>
+                                            @if (item.Discount != null && item.Price > 0 && item.Discount > 0)
+                                            {
+                                                <div class="product_label">
+
+                                                    @{
+                                                        decimal? discount_percentage;
+                                                        discount_percentage = (item.Discount.GetValueOrDefault(0) / item.Price.GetValueOrDefault(0)) * 100;
+                                                    }
+
+                                                    <span>
+                                                        -@discount_percentage.GetValueOrDefault(0).ToString("F0")%
+                                                    </span>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="product_content grid_content text-center">
+
+                                            <h4 class="product_name"><a href="/dishesuser/DishDetails/@item.Id">@item.Title</a></h4>
+                                            <div class="price_box">
+                                                @if (item.Discount != null && item.Discount > 0)
+                                                {
+                                                    <span class="current_price">
+
+                                                        @{
+                                                            decimal? discount_price;
+                                                            discount_price = item.Price.GetValueOrDefault(0) - item.Discount.GetValueOrDefault(0);
+                                                        }
+                                                        $@discount_price.GetValueOrDefault(0).ToString("F")
+                                                    </span>
+                                                    <span class="old_price">$@item.Price.GetValueOrDefault(0).ToString("F")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="current_price">$@item.Price.GetValueOrDefault(0).ToString("F")</span>
+                                                }
+                                            </div>
+                                            <div class="add_to_cart">
+                                                <a class="btn btn-primary" onclick="updateCart(@item.Id, 1)" href="#" data-tippy="Add To Cart" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top">Add To Cart</a>
+                                            </div>
+                                        </div>
+                                        <div class="product_list_content">
+                                            <h4 class="product_name"><a href="/dishesuser/DishDetails/@item.Id">@item.Title</a></h4>
+                                            
+                                            <div class="price_box">
+                                                @if (item.Discount != null && item.Discount > 0)
+                                                {
+                                                    <span class="current_price">
+
+                                                        @{
+                                                            decimal? discount_price;
+                                                            discount_price = item.Price.GetValueOrDefault(0) - item.Discount.GetValueOrDefault(0);
+                                                        }
+                                                        $@discount_price.GetValueOrDefault(0).ToString("F")
+                                                    </span>
+                                                    <span class="old_price">$@item.Price.GetValueOrDefault(0).ToString("F")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="current_price">$@item.Price.GetValueOrDefault(0).ToString("F")</span>
+                                                }
+                                            </div>
+                                            <div class="product_desc">
+                                                <p>@item.Description</p>
+                                            </div>
+                                            <div class="add_to_cart">
+                                                <a class="btn btn-primary" href="#" data-tippy="Add To Cart" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top">Add To Cart</a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- product section end -->
+<!-- banner section start -->
+<section class="banner_section  mb-109">
+    <div class="container">
+        <div class="banner_container d-flex">
+
+            @if (banners != null)
+            {
+
+                var banners2_list = banners.Where(x => x.Position == "Banner2").OrderBy(x => x.Priority).ToList();
+
+               @*  foreach (var item in banners2_list)
+                {
+                    
+                        <figure class="single_banner position-relative">
+                            <img src="/images/banners/@item.ImageName" alt="@item.ImageName">
+                                <figcaption class="banner_text position-absolute">
+                                <h3>@Html.Raw(item.Title.Replace("\n", "<br/>"))</h3>
+                                <p>@Html.Raw(item.SubTitle.Replace("\n", "<br/>"))</p>
+
+                                @if(!string.IsNullOrEmpty(item.Link))
+                                {
+                                <a class="btn btn-primary" href="@item.Link">Order Now</a>
+                                }
+                         
+                                </figcaption>
+
+                        </figure>
+                   
+                } *@
+
+
+                foreach (var item in banners2_list)
+                {
+                    <figure class="single_banner position-relative mr-30">
+                        <img src="/images/banners/@item.ImageName" alt="@item.ImageName">
+                        <figcaption class="banner_text position-absolute">
+                            <h3>@Html.Raw(item.Title.Replace("\n", "<br/>"))</h3>
+                            <p>>@Html.Raw(item.SubTitle.Replace("\n", "<br/>"))</p>
+                            @if (!string.IsNullOrEmpty(item.Link))
+                            {
+                                <a class="btn btn-primary" href="@item.Link">Order Now</a>
+                            }
+
+
+                        </figcaption>
+                    </figure>
+                }
+
+            }
+
+
+           
+            
+        </div>
+    </div>
+</section>
+<!-- banner section end -->
